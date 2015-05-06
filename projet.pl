@@ -22,4 +22,7 @@ afficheTrader(1):-write('x'),!.
 afficheTrader(N):-write('\t'),M is N-1, afficheTrader(M).
 
 afficheBourse([]).
-afficheBourse([[T|L]|Q]):-write(T),write(':\t'),write(L),nl,afficheBourse(Q).
+afficheBourse([[T|L]|Q]):-nl,write(T),write(':\t'),write(L),afficheBourse(Q).
+
+affichePlateau(P):-faussesMarchandises(M),fausseBourse(B),afficheMarchandise(M),
+				   afficheQuantite(M),afficheTrader(4),afficheBourse(B).
