@@ -117,24 +117,27 @@ DEROULEMENT D'UN COUP
 exchange([E|Q],E,E1,[E1|Q]):-!.
 exchange([T|Q],E,E1,[T|R]):-exchange(Q,E,E1,R).
 */
+
 % Le modulo permet au prédicat de fonctionner avec des déplacements supérieur au nombre de pile
 
 modulo(X,Y,Z):- X > Y, Z is X mod Y,!.
-modulo(X,Y,X).
+modulo(X,_,X).
 
 % Prédicat pour connaître le premier élément de la sous liste (pile) précédent la position du trader après que le coup ait été effectué 
 
-precedent(Marchandise,Deplacement,PositionTrader,ElementPrecedent):-length(Marchandise,Longueur), 
-											 						PositionTraderTemporaire is PositionTrader+Deplacement-1, 
-											 						modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
-											 						nth(PositionTraderFuture,Marchandise,[ElementPrecedent|_]).
+precedent(Marchandise,Deplacement,PositionTrader,ElementPrecedent):-
+	length(Marchandise,Longueur), 
+	PositionTraderTemporaire is PositionTrader+Deplacement-1, 
+	modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
+	nth(PositionTraderFuture,Marchandise,[ElementPrecedent|_]).
 
 % Idem mais pour la pile suivante
 
-suivant(Marchandise,Deplacement,Trader,ElementSuivant):-length(Marchandise,Longueur), 
-										   				PositionTraderTemporaire is Trader+Deplacement+1, 
-										   				modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture), 
-										   				nth(PositionTraderFuture,Marchandise,[ElementSuivant|_]).
+suivant(Marchandise,Deplacement,Trader,ElementSuivant):-
+	length(Marchandise,Longueur), 
+	PositionTraderTemporaire is Trader+Deplacement+1, 
+	modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture), 
+	nth(PositionTraderFuture,Marchandise,[ElementSuivant|_]).
 
 % Prédicat pour vérifier si les éléments contenus dans le coup sont bien ceux trouvés par les prédicats precedent et suivant
 % Le prédicat peut être vrai dans les deux cas suivants car l'élément précédent peut être soit l'élément conservé soit l'élément
@@ -150,10 +153,11 @@ verif([X,Y],[Y,X]).
 % Il va ensuite récupérer les têtes des sous-listes précédent et suivant la sous-liste sur laquelle le trader se trouve
 % Finalement, il vérifie que ces têtes soient bien les mêmes que les éléments du coup à jouer
 
-coupPossible([Marchandise,_,PositionTrader,_,_],[_,Deplacement,ElementGarde,ElementJete]):-member(Deplacement,[1,2,3]),
-												 										   precedent(Marchandise,Deplacement,PositionTrader,ElementPrecedent),
-												 										   suivant(Marchandise,Deplacement,PositionTrader,ElementSuivant),
-												 										   verif([ElementGarde,ElementJete],[ElementPrecedent,ElementSuivant]),!.
+coupPossible([Marchandise,_,PositionTrader,_,_],[_,Deplacement,ElementGarde,ElementJete]):-
+	member(Deplacement,[1,2,3]),
+	precedent(Marchandise,Deplacement,PositionTrader,ElementPrecedent),
+	suivant(Marchandise,Deplacement,PositionTrader,ElementSuivant),
+	verif([ElementGarde,ElementJete],[ElementPrecedent,ElementSuivant]),!.
 
 % On découpe les changements en plusieurs prédicats
 
@@ -172,29 +176,33 @@ changeJoueur(Joueur,ElementGarde,NewJoueur):-append(Joueur,[ElementGarde],NewJou
 
 % Prédicat qui déplace le trader du nombre de pile renseigné dans le coup
 
-changeTrader(Marchandise,Trader,Deplacement,NewTrader):-length(Marchandise,Longueur), 
-														NewTraderTemporaire is Trader+Deplacement, 
-														modulo(NewTraderTemporaire, Longueur, NewTrader).
+changeTrader(Marchandise,Trader,Deplacement,NewTrader):-
+	length(Marchandise,Longueur), 
+	NewTraderTemporaire is Trader+Deplacement, 
+	modulo(NewTraderTemporaire, Longueur, NewTrader).
 
 % Prédicat permettant de supprimer la tête de la ième sous-liste et de renvoyer la liste modifiée 
 
 supprimeElement([[_|R]|Queue],1,[R|Queue]):-!.
-supprimeElement([Tete|Queue],PositionRelativeSousListe,[Tete|R]):-NewPositionRelativeSousListe is PositionRelativeSousListe-1, 
-																  supprimeElement(Queue,NewPositionRelativeSousListe,R).
+supprimeElement([Tete|Queue],PositionRelativeSousListe,[Tete|R]):-
+	NewPositionRelativeSousListe is PositionRelativeSousListe-1, 
+	supprimeElement(Queue,NewPositionRelativeSousListe,R).
 
 % Prédicat identifiant la position de la sous-liste précédent la position future du trader et supprimant son premier élément
 
-supprimeMarchandisePrecedent(Marchandise,Deplacement,PositionTrader,NewMarchandise):-length(Marchandise,Longueur), 
-																					 PositionTraderTemporaire is PositionTrader+Deplacement-1, 
-																					 modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture), 
-																					 supprimeElement(Marchandise,PositionTraderFuture,NewMarchandise).
+supprimeMarchandisePrecedent(Marchandise,Deplacement,PositionTrader,NewMarchandise):-
+	length(Marchandise,Longueur), 
+	PositionTraderTemporaire is PositionTrader+Deplacement-1, 
+	modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture), 
+	supprimeElement(Marchandise,PositionTraderFuture,NewMarchandise).
 
 % Idem mais pour la sous-liste suivante
 
-supprimeMarchandiseSuivant(Marchandise,Deplacement,PositionTrader,NewMarchandise):-length(Marchandise,Longueur), 
-																				   PositionTraderTemporaire is PositionTrader+Deplacement+1, 
-																				   modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
-																				   supprimeElement(Marchandise,PositionTraderFuture,NewMarchandise).
+supprimeMarchandiseSuivant(Marchandise,Deplacement,PositionTrader,NewMarchandise):-
+	length(Marchandise,Longueur), 
+	PositionTraderTemporaire is PositionTrader+Deplacement+1, 
+	modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
+	supprimeElement(Marchandise,PositionTraderFuture,NewMarchandise).
 
 % Prédicat executant deux, une ou aucune fois le prédicat remove en fonction de nombre de liste vide à supprimer après que le coup ait été joué
 
@@ -202,47 +210,57 @@ remove2(L,E,L2):-remove(L,E,L1),remove(L1,E,L2),!.
 remove2(L,E,L2):-remove(L,E,L2),!.
 remove2(L,_,L).
 
-changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise):-supprimeMarchandisePrecedent(Marchandise,Deplacement,PositionTrader,MarchandiseBis),
-																    		supprimeMarchandiseSuivant(MarchandiseBis,Deplacement,PositionTrader,MarchandiseTer),
-																    		remove2(MarchandiseTer,[],NewMarchandise).
+% Prédicat supprimant les premiers éléments des sous-listes précédent et suivant la position actuelle du trader puis 
+% supprimant toutes les sous-listes vides éventuellement crées
+
+changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise):-
+	supprimeMarchandisePrecedent(Marchandise,Deplacement,PositionTrader,MarchandiseBis),
+	supprimeMarchandiseSuivant(MarchandiseBis,Deplacement,PositionTrader,MarchandiseTer),
+	remove2(MarchandiseTer,[],NewMarchandise).
+
+/* PREDICAT JOUERCOUP(+PlateauInitial,?Coup,?NouveauPlateau) */
+
+% Le prédicat jouerCoup modifie dans l'ordre, la bourse, le joueur et le plateau
 
 jouerCoup([Marchandise,Bourse,PositionTrader,Joueur1,Joueur2],
 		  [j1,Deplacement,ElementGarde,ElementJete],
-		  [NewMarchandise,NewBourse,NewPositionTrader,NewJoueur1,Joueur2]):-changeBourse(Bourse,ElementJete,NewBourse),
-																			   changeJoueur(Joueur1,ElementGarde,NewJoueur1),
-																			   changeTrader(Marchandise,PositionTrader,Deplacement,NewPositionTrader),
-																			   supprimeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise),!.
+		  [NewMarchandise,NewBourse,NewPositionTrader,NewJoueur1,Joueur2]):-
+				changeBourse(Bourse,ElementJete,NewBourse),
+				changeJoueur(Joueur1,ElementGarde,NewJoueur1),
+				changeTrader(Marchandise,PositionTrader,Deplacement,NewPositionTrader),
+				changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise),!.
 jouerCoup([Marchandise,Bourse,PositionTrader,Joueur1,Joueur2],
 		  [j2,Deplacement,ElementGarde,ElementJete],
-		  [NewMarchandise,NewBourse,NewPositionTrader,Joueur1,NewJoueur2]):-changeBourse(Bourse,ElementJete,NewBourse),
-																			   changeJoueur(Joueur2,ElementGarde,NewJoueur2),
-																			   changeTrader(Marchandise,PositionTrader,Deplacement,NewPositionTrader),
-																			   changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise),!.
+		  [NewMarchandise,NewBourse,NewPositionTrader,Joueur1,NewJoueur2]):-
+				changeBourse(Bourse,ElementJete,NewBourse),
+				changeJoueur(Joueur2,ElementGarde,NewJoueur2),
+				changeTrader(Marchandise,PositionTrader,Deplacement,NewPositionTrader),
+				changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise),!.
 
 
 /************
 DONNEES TESTS
 *************/
 
-fauxCoup([j1,2,riz,sucre]).
-fauxPlateau([[[maïs, riz, ble, ble],
-[riz, maïs, sucre, riz],
+fauxCoup([j1,2,riz,riz]).
+fauxPlateau([[[mais, riz, ble, ble],
+[riz, mais, sucre, riz],
 [mais, sucre, cacao, riz],
-[sucre, maïs, sucre, maïs],
-[cacao, maïs, ble, sucre],
+[sucre, mais, sucre, mais],
+[cacao, mais, ble, sucre],
 [riz, cafe, sucre, ble],
 [cafe, ble, sucre, cacao],
-[maïs, cacao, cacao],
+[mais, cacao, cacao],
 [riz,riz,cafe,cacao]],
 [[ble,7],[riz,6],[cacao,6],[cafe,6],[sucre,6],[mais,6]],
 1,[],[]]).
 fausseBourse([[ble,7],[riz,6],[cacao,6],[cafe,6],[sucre,6],[mais,6]]).
-fausseMarchandise([[maïs, riz, ble, ble],
-[riz, maïs, sucre, riz],
+fausseMarchandise([[mais, riz, ble, ble],
+[riz, mais, sucre, riz],
 [mais],
-[sucre, maïs, sucre, maïs],
+[sucre, mais, sucre, mais],
 [cacao],
 [riz, cafe, sucre, ble],
 [cafe, ble, sucre, cacao],
-[maïs, cacao, cacao],
+[mais, cacao, cacao],
 [riz,riz,cafe,cacao]]).
