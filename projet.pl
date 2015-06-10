@@ -6,11 +6,11 @@ AFFICHAGE DU PLATEAU
 
 afficheMarchandise([]).
 afficheMarchandise([[]|Q]):-!, afficheMarchandise(Q).
-afficheMarchandise([[T|_]|Q]):-write(T), write('\t'),afficheMarchandise(Q). 
+afficheMarchandise([[T|_]|Q]):-write(T), write('\t'),afficheMarchandise(Q).
 
 afficheQuantite([]).
 afficheQuantite([[]|Q]):-!, afficheQuantite(Q).
-afficheQuantite([T|Q]):-length(T,N), write(N), write('\t'),afficheQuantite(Q). 
+afficheQuantite([T|Q]):-length(T,N), write(N), write('\t'),afficheQuantite(Q).
 
 afficheTrader(1):-write('x'),!.
 afficheTrader(N):-write('\t'),M is N-1, afficheTrader(M).
@@ -26,7 +26,7 @@ afficheJ1(L):-write('La reserve du joueur 1 contient: '), afficheListe(L).
 afficheJ2(L):-write('La reserve du joueur 2 contient: '), afficheListe(L).
 
 affichePlateau([Marchandise,Bourse,Trader,Joueur1,Joueur2]):-write('Bourse:'),nl,afficheBourse(Bourse),nl,write('Plateau:'),nl, afficheMarchandise(Marchandise),nl,
-	afficheQuantite(Marchandise),nl,afficheTrader(Trader),nl,nl,afficheJ1(Joueur1),nl,afficheJ2(Joueur2),nl.
+afficheQuantite(Marchandise),nl,afficheTrader(Trader),nl,nl,afficheJ1(Joueur1),nl,afficheJ2(Joueur2),nl.
 
 
 /********************
@@ -36,32 +36,32 @@ GENERATION DU PLATEAU
 % On liste l'ensemble des ressources à notre disposition et on ira piocher dedans aléatoirement
 
 init([ble,ble,ble,ble,ble,ble,mais,mais,mais,mais,
-	  mais,mais,riz,riz,riz,riz,riz,riz,cacao,cacao,
-	  cacao,cacao,cacao,cacao,cafe,cafe,cafe,cafe,
-	  cafe,cafe,sucre,sucre,sucre,sucre,sucre,sucre]).
+mais,mais,riz,riz,riz,riz,riz,riz,cacao,cacao,
+cacao,cacao,cacao,cacao,cafe,cafe,cafe,cafe,
+cafe,cafe,sucre,sucre,sucre,sucre,sucre,sucre]).
 
 % Initialiser les Marchandises revient à initialiaser les piles qui revient à initialiser les jetons
 
-% 9 piles à initialiser 
+% 9 piles à initialiser
 
 initMarchandise(Marchandise,[Pile1,Pile2,Pile3,Pile4,Pile5,Pile6,Pile7,Pile8,Pile9]):-
-	initPile(Marchandise,Pile1,Marchandise2),
-	initPile(Marchandise2,Pile2,Marchandise3),
-	initPile(Marchandise3,Pile3,Marchandise4),
-	initPile(Marchandise4,Pile4,Marchandise5),
-	initPile(Marchandise5,Pile5,Marchandise6),
-	initPile(Marchandise6,Pile6,Marchandise7),
-	initPile(Marchandise7,Pile7,Marchandise8),
-	initPile(Marchandise8,Pile8,Marchandise9),
-	initPile(Marchandise9,Pile9,_).
+initPile(Marchandise,Pile1,Marchandise2),
+initPile(Marchandise2,Pile2,Marchandise3),
+initPile(Marchandise3,Pile3,Marchandise4),
+initPile(Marchandise4,Pile4,Marchandise5),
+initPile(Marchandise5,Pile5,Marchandise6),
+initPile(Marchandise6,Pile6,Marchandise7),
+initPile(Marchandise7,Pile7,Marchandise8),
+initPile(Marchandise8,Pile8,Marchandise9),
+initPile(Marchandise9,Pile9,_).
 
 % 4 jetons par pile à initialiser
 
 initPile(Marchandise,[Jeton1,Jeton2,Jeton3,Jeton4],NewMarchandise):-
-	initJeton(Marchandise,Jeton1,Marchandise2),
-	initJeton(Marchandise2,Jeton2,Marchandise3),
-	initJeton(Marchandise3,Jeton3,Marchandise4),
-	initJeton(Marchandise4,Jeton4,NewMarchandise).
+initJeton(Marchandise,Jeton1,Marchandise2),
+initJeton(Marchandise2,Jeton2,Marchandise3),
+initJeton(Marchandise3,Jeton3,Marchandise4),
+initJeton(Marchandise4,Jeton4,NewMarchandise).
 
 % Prédicat pour retirer l'élément E d'une liste [T|Q]
 
@@ -69,22 +69,22 @@ remove([E|Q],E,Q):-!.
 remove([T|Q],E,[T|R]):-remove(Q,E,R).
 
 % Le prédicat initJeton génère un nombre comprit entre 1 et la taille de la liste initialisée plus haut
-% Il incrémente de 1 la longueur renvoyée par le prédicat length car le prédicat random génère un nombre aléatoire entre 1 et le deuxième argument-1 
+% Il incrémente de 1 la longueur renvoyée par le prédicat length car le prédicat random génère un nombre aléatoire entre 1 et le deuxième argument-1
 % Il va ensuite récupérer l'élément qui se trouve dans la liste à la position correspondant au nombre aléatoire
 % Finalement, il le supprime
 
 initJeton(Marchandise,Jeton,NewMarchandise):-
-	length(Marchandise,Longueur1),
-	Longueur2 is Longueur1+1, 
-	random(1,Longueur2,Rand),
-	nth(Rand,Marchandise,Jeton),
-	remove(Marchandise,Jeton,NewMarchandise).
+length(Marchandise,Longueur1),
+Longueur2 is Longueur1+1,
+random(1,Longueur2,Rand),
+nth(Rand,Marchandise,Jeton),
+remove(Marchandise,Jeton,NewMarchandise).
 
 % La bourse de départ est toujours la même
 
 initBourse([[ble,7],[riz,6],[cacao,6],[cafe,6],[sucre,6],[mais,6]]).
 
-% Au départ les joueurs n'ont aucun jeton dans leurs réserves 
+% Au départ les joueurs n'ont aucun jeton dans leurs réserves
 
 initJ1([]).
 initJ2([]).
@@ -93,17 +93,17 @@ initJ2([]).
 
 initTrader(1).
 
-/* PREDICAT PLATEAUDEPART(?PLATEAU) */ 
+/* PREDICAT PLATEAUDEPART(?PLATEAU) */
 
 % On initialise l'ensemble du plateau en un seul prédicat
 
 plateauDepart([M,B,T,J1,J2]):-
-	init(I),
-	initMarchandise(I,M),
-	initTrader(T),
-	initJ1(J1),
-	initJ2(J2),
-	initBourse(B).
+init(I),
+initMarchandise(I,M),
+initTrader(T),
+initJ1(J1),
+initJ2(J2),
+initBourse(B).
 
 
 /********************
@@ -120,45 +120,45 @@ exchange([T|Q],E,E1,[T|R]):-exchange(Q,E,E1,R).
 
 % Le modulo permet au prédicat de fonctionner avec des déplacements supérieur au nombre de pile
 
-modulo(6,3,1).
+modulo(X, Y, 1):-X is 2*Y.
 modulo(X,Y,Z):- X > Y, Z is X mod Y,!.
 modulo(X,_,X).
 
-% Prédicat pour connaître le premier élément de la sous liste (pile) précédent la position du trader après que le coup ait été effectué 
+% Prédicat pour connaître le premier élément de la sous liste (pile) précédent la position du trader après que le coup ait été effectué
 
 precedent(Marchandise,Deplacement,PositionTrader,ElementPrecedent):-
-	length(Marchandise,Longueur), 
-	PositionTraderTemporaire is PositionTrader+Deplacement-1, 
-	modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
-	nth(PositionTraderFuture,Marchandise,[ElementPrecedent|_]).
+    length(Marchandise,Longueur),
+    PositionTraderTemporaire is PositionTrader+Deplacement-1,
+    modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
+    nth(PositionTraderFuture,Marchandise,[ElementPrecedent|_]).
 
 % Idem mais pour la pile suivante
 
 suivant(Marchandise,Deplacement,Trader,ElementSuivant):-
-	length(Marchandise,Longueur), 
-	PositionTraderTemporaire is Trader+Deplacement+1, 
-	modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture), 
-	nth(PositionTraderFuture,Marchandise,[ElementSuivant|_]).
+    length(Marchandise,Longueur),
+    PositionTraderTemporaire is Trader+Deplacement+1,
+    modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
+    nth(PositionTraderFuture,Marchandise,[ElementSuivant|_]).
 
 % Prédicat pour vérifier si les éléments contenus dans le coup sont bien ceux trouvés par les prédicats precedent et suivant
 % Le prédicat peut être vrai dans les deux cas suivants car l'élément précédent peut être soit l'élément conservé soit l'élément
-% jeté. Idem pour l'élément suivant 
+% jeté. Idem pour l'élément suivant
 
 verif([X,Y],[X,Y]).
 verif([X,Y],[Y,X]).
 
 /* PREDICAT COUPPOSSIBLE(+PLATEAU, ?COUP) */
 
-% Le prédicat coupPossible utilise le prédicat member(E,L) qui vérifie si l'élélement E se trouve dans la liste L 
+% Le prédicat coupPossible utilise le prédicat member(E,L) qui vérifie si l'élélement E se trouve dans la liste L
 % Il va d'abord vérifier que le déplacement est conforme aux règles du jeu, c'est à dire s'il est compris entre 1 et 3
 % Il va ensuite récupérer les têtes des sous-listes précédent et suivant la sous-liste sur laquelle le trader se trouve
 % Finalement, il vérifie que ces têtes soient bien les mêmes que les éléments du coup à jouer
 
 coupPossible([Marchandise,_,PositionTrader,_,_],[_,Deplacement,ElementGarde,ElementJete]):-
-	member(Deplacement,[1,2,3]),
-	precedent(Marchandise,Deplacement,PositionTrader,ElementPrecedent),
-	suivant(Marchandise,Deplacement,PositionTrader,ElementSuivant),
-	verif([ElementGarde,ElementJete],[ElementPrecedent,ElementSuivant]),!.
+    member(Deplacement,[1,2,3]),
+    precedent(Marchandise,Deplacement,PositionTrader,ElementPrecedent),
+    suivant(Marchandise,Deplacement,PositionTrader,ElementSuivant),
+    verif([ElementGarde,ElementJete],[ElementPrecedent,ElementSuivant]),!.
 
 % On découpe les changements en plusieurs prédicats
 
@@ -178,33 +178,33 @@ changeJoueur(Joueur,ElementGarde,NewJoueur):-append(Joueur,[ElementGarde],NewJou
 % Prédicat qui déplace le trader du nombre de pile renseigné dans le coup
 
 changeTrader(Marchandise,Trader,Deplacement,NewTrader):-
-	length(Marchandise,Longueur), 
-	NewTraderTemporaire is Trader+Deplacement, 
-	modulo(NewTraderTemporaire, Longueur, NewTrader).
+    length(Marchandise,Longueur),
+    NewTraderTemporaire is Trader+Deplacement,
+    modulo(NewTraderTemporaire, Longueur, NewTrader).
 
-% Prédicat permettant de supprimer la tête de la ième sous-liste et de renvoyer la liste modifiée 
+% Prédicat permettant de supprimer la tête de la ième sous-liste et de renvoyer la liste modifiée
 
 supprimeElement([[_|R]|Queue],1,[R|Queue]):-!.
-supprimeElement([Tete|Queue],PositionRelativeSousListe,[Tete|R]):-
-	NewPositionRelativeSousListe is PositionRelativeSousListe-1, 
-	supprimeElement(Queue,NewPositionRelativeSousListe,R).
+    supprimeElement([Tete|Queue],PositionRelativeSousListe,[Tete|R]):-
+    NewPositionRelativeSousListe is PositionRelativeSousListe-1,
+    supprimeElement(Queue,NewPositionRelativeSousListe,R).
 
 % Prédicat identifiant la position de la sous-liste précédent la position future du trader et supprimant son premier élément
 
 supprimeMarchandisePrecedent(Marchandise,Deplacement,PositionTrader,NewMarchandise,NewPositionTrader):-
-	length(Marchandise,Longueur), 
-	PositionTraderTemporaire is PositionTrader+Deplacement-1, 
-	modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture), 
-	supprimeElement(Marchandise,PositionTraderFuture,NewMarchandise),
-	verifTrader(PositionTrader,NewMarchandise,NewPositionTrader).
+    length(Marchandise,Longueur),
+    PositionTraderTemporaire is PositionTrader+Deplacement-1,
+    modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
+    supprimeElement(Marchandise,PositionTraderFuture,NewMarchandise),
+    verifTrader(PositionTrader,NewMarchandise,NewPositionTrader).
 
 % Idem mais pour la sous-liste suivante
 
 supprimeMarchandiseSuivant(Marchandise,Deplacement,PositionTrader,NewMarchandise):-
-	length(Marchandise,Longueur), 
-	PositionTraderTemporaire is PositionTrader+Deplacement+1, 
-	modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
-	supprimeElement(Marchandise,PositionTraderFuture,NewMarchandise).
+length(Marchandise,Longueur),
+PositionTraderTemporaire is PositionTrader+Deplacement+1,
+modulo(PositionTraderTemporaire, Longueur, PositionTraderFuture),
+supprimeElement(Marchandise,PositionTraderFuture,NewMarchandise).
 
 % Prédicat executant deux, une ou aucune fois le prédicat remove en fonction de nombre de liste vide à supprimer après que le coup ait été joué
 
@@ -215,37 +215,39 @@ remove2(L,_,L).
 verifTrader(T,M,NT):-remove(M,[],_),NT is T-1.
 verifTrader(T,_,T).
 
-% Prédicat supprimant les premiers éléments des sous-listes précédent et suivant la position actuelle du trader puis 
+% Prédicat supprimant les premiers éléments des sous-listes précédent et suivant la position actuelle du trader puis
 % supprimant toutes les sous-listes vides éventuellement crées
 
 changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise,NewPositionTrader):-
-	supprimeMarchandisePrecedent(Marchandise,Deplacement,PositionTrader,MarchandiseBis,NewPositionTrader),
-	supprimeMarchandiseSuivant(MarchandiseBis,Deplacement,PositionTrader,MarchandiseTer),
-	remove2(MarchandiseTer,[],NewMarchandise).
+supprimeMarchandisePrecedent(Marchandise,Deplacement,PositionTrader,MarchandiseBis,NewPositionTrader),
+supprimeMarchandiseSuivant(MarchandiseBis,Deplacement,PositionTrader,MarchandiseTer),
+remove2(MarchandiseTer,[],NewMarchandise).
 
 /* PREDICAT JOUERCOUP(+PlateauInitial,?Coup,?NouveauPlateau) */
 
 % Le prédicat jouerCoup modifie dans l'ordre, la bourse, le joueur et le plateau
 
 jouerCoup([Marchandise,Bourse,PositionTrader,Joueur1,Joueur2],
-		  [j1,Deplacement,ElementGarde,ElementJete],
-		  [NewMarchandise,NewBourse,NewPositionTrader2,NewJoueur1,Joueur2]):-
-				changeBourse(Bourse,ElementJete,NewBourse),
-				changeJoueur(Joueur1,ElementGarde,NewJoueur1),
-				changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise,NewPositionTrader),
-				changeTrader(NewMarchandise,NewPositionTrader,Deplacement,NewPositionTrader2),
-				!.
+[j1,Deplacement,ElementGarde,ElementJete],
+[NewMarchandise,NewBourse,NewPositionTrader2,NewJoueur1,Joueur2]):-
+changeBourse(Bourse,ElementJete,NewBourse),
+changeJoueur(Joueur1,ElementGarde,NewJoueur1),
+changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise,NewPositionTrader),
+changeTrader(NewMarchandise,NewPositionTrader,Deplacement,NewPositionTrader2),
+!.
 jouerCoup([Marchandise,Bourse,PositionTrader,Joueur1,Joueur2],
-		  [j2,Deplacement,ElementGarde,ElementJete],
-		  [NewMarchandise,NewBourse,NewPositionTrader2,Joueur1,NewJoueur2]):-
-				changeBourse(Bourse,ElementJete,NewBourse),
-				changeJoueur(Joueur2,ElementGarde,NewJoueur2),
-				changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise,NewPositionTrader),
-				changeTrader(NewMarchandise,NewPositionTrader,Deplacement,NewPositionTrader2),
-				!.
+[j2,Deplacement,ElementGarde,ElementJete],
+[NewMarchandise,NewBourse,NewPositionTrader2,Joueur1,NewJoueur2]):-
+changeBourse(Bourse,ElementJete,NewBourse),
+changeJoueur(Joueur2,ElementGarde,NewJoueur2),
+changeMarchandise(Marchandise,Deplacement,PositionTrader,NewMarchandise,NewPositionTrader),
+changeTrader(NewMarchandise,NewPositionTrader,Deplacement,NewPositionTrader2),
+!.
 
-				
-				
+/******************************************
+DEROULEMENT D'UNE PARTIE ENTRE DEUX JOUEURS
+*******************************************/
+
 joueurJoueur(P):-debutJeu(P),jouer(j1,P).
 
 debutJeu(P):-plateauDepart(P),affichePlateau(P).
@@ -262,21 +264,55 @@ coupSuivant([j2,_,_,_],P):-jouer(j1,P).
 score([],_,0).
 score([T|Q],B,S):-score(Q,B,NS),scoreBourse(T,B,R),S is NS+R.
 
-scoreBourse(E,[[E|[R]]|_],R).
-scoreBourse(E,[T|Q],R):-scoreBourse(E,Q,R).
+scoreBourse(E,[[E|[R]]|_],R):-!.
+scoreBourse(E,[_|Q],R):-scoreBourse(E,Q,R).
 
 gagnant(S1,S2):-S1>S2, write('Le joueur 1 a gagné avec un score de '), write(S1), write(' !\n'),!.
 gagnant(S1,S2):-S1<S2, write('Le joueur 2 a gagné avec un score de '), write(S2), write(' !\n'),!.
-gagnant(S1,S2):-write('Egalité avec un score de '), write(S1), write(' !\n'),!.
+gagnant(S1,_):-write('Egalité avec un score de '), write(S1), write(' !\n'),!.
 
 
 /*************************
 INTELLIGENCE ARTIFICIELLE
 **************************/
 
-coupsPossibles(P,J,LCoup):-creerCoup(J,P,3,LCoup).
+/*Crée une liste des coups possible pour un etat donné*/
+
+coupsPossibles(Plateau,Joueur,ListeCoup):-creerCoup(Joueur,Plateau,3,ListeCoup).
 creerCoup(_,_,0,[]).
-creerCoup(J,[Mar,_,Pos,_,_],N,[[J,N,Prec,Suiv]|[[J,N,Suiv,Prec]|[R]]]):-precedent(Mar,N,Pos,Prec), suivant(Mar,N,Pos,Suiv), M is N-1, creerCoup(J,[Mar,_,Pos,_,_],M,R).
+creerCoup(Joueur,[Marchandise,_,Position,_,_],Deplacement,[[Joueur,Deplacement,Precedent,Suivant]|[[Joueur,Deplacement,Suivant,Precedent]|Reste]]):-precedent(Marchandise,Deplacement,Position,Precedent), suivant(Marchandise,Deplacement,Position,Suivant), DeplacementTemp is Deplacement-1, creerCoup(Joueur,[Marchandise,_,Position,_,_],DeplacementTemp,Reste).
+
+
+/*Application du minmax*/
+scoreMinmax([Joueur,_,ElementGarde,_],[_,Bourse,_,_,_],Joueur,Score,Bourse,0):-score([ElementGarde],Bourse,Score),!.
+scoreMinmax([AutreJoueur,_,ElementGarde,_],[_,Bourse,_,_,_],Joueur,Score,Bourse,0):-Joueur\=AutreJoueur,score([ElementGarde],Bourse,ScoreTemp),Score is -ScoreTemp,!.
+scoreMinmax([Joueur,_,ElementGarde,_],[Marchandise,Bourse,_,_,_],Joueur,Score,Bourse,_):-length(Marchandise,Longueur),Longueur<3,score([ElementGarde],Bourse,Score),!.
+scoreMinmax([AutreJoueur,_,ElementGarde,_],[Marchandise,Bourse,_,_,_],Joueur,Score,Bourse,_):-Joueur\=AutreJoueur,length(Marchandise,Longueur),Longueur<3,score([ElementGarde],Bourse,ScoreTemp),Score is -ScoreTemp,!.
+
+scoreMinmax([Joueur,_,ElementGarde,_],_,Joueur,Score,Bourse,0):-score([ElementGarde],Bourse,Score),!.
+scoreMinmax([AutreJoueur,_,ElementGarde,_],_,Joueur,Score,Bourse,0):-Joueur\=AutreJoueur,score([ElementGarde],Bourse,ScoreTemp),Score is -ScoreTemp,!.
+scoreMinmax([Joueur,_,ElementGarde,_],[Marchandise,_,_,_,_],Joueur,Score,Bourse,_):-length(Marchandise,Longueur),Longueur<3,score([ElementGarde],Bourse,Score),!.
+scoreMinmax([AutreJoueur,_,ElementGarde,_],[Marchandise,_,_,_,_],Joueur,Score,Bourse,_):-Joueur\=AutreJoueur,length(Marchandise,Longueur),Longueur<3,score([ElementGarde],Bourse,ScoreTemp),Score is -ScoreTemp,!.
+
+scoreMinmax([Joueur,_,ElementGarde,_],Plateau,Joueur,Score,Bourse,Iteration):-autreJ(Joueur,AutreJoueur),coupsPossibles(Plateau,AutreJoueur,NouvelleListeCoup),minmax(Plateau,NouvelleListeCoup,Joueur,ScoreTemp1,Bourse,_,Iteration),score([ElementGarde],Bourse,ScoreTemp2),Score is ScoreTemp1+ScoreTemp2.
+scoreMinmax([AutreJoueur,_,ElementGarde,_],Plateau,Joueur,Score,Bourse,Iteration):-Joueur\=AutreJoueur,coupsPossibles(Plateau,Joueur,NouvelleListeCoup),minmax(Plateau,NouvelleListeCoup,Joueur,ScoreTemp1,Bourse,_,Iteration),score([ElementGarde],Bourse,ScoreTemp2),Score is ScoreTemp1-ScoreTemp2.
+
+coupMinmax(Plateau,ListeCoup,Joueur,Score,Bourse,Coup,Iteration):-nth(_,ListeCoup,Coup),jouerCoup(Plateau,Coup,NouveauPlateau),scoreMinmax(Coup,NouveauPlateau,Joueur,Score,Bourse,Iteration).
+
+minmax(Plateau,[[Joueur,Deplacement,Prec,Suiv]|Reste],Joueur,Score,Bourse,Coup,Iteration):-Temp is Iteration-1, nth(_,[[Joueur,Deplacement,Prec,Suiv]|Reste],Coup),jouerCoup(Plateau,Coup,NouveauPlateau),scoreMinmax(Coup,NouveauPlateau,Joueur,Score,Bourse,Temp),\+plus_petit(Plateau,[[Joueur,Deplacement,Prec,Suiv]|Reste],Joueur,Score,Temp),!.
+minmax(Plateau,[[AutreJoueur,Deplacement,Prec,Suiv]|Reste],Joueur,Score,Bourse,Coup,Iteration):-Joueur\=AutreJoueur,nth(_,[[AutreJoueur,Deplacement,Prec,Suiv]|Reste],Coup),jouerCoup(Plateau,Coup,NouveauPlateau),scoreMinmax(Coup,NouveauPlateau,Joueur,Score,Bourse,Iteration),\+plus_grand(Plateau,[[AutreJoueur,Deplacement,Prec,Suiv]|Reste],Joueur,Score,Iteration),!.
+
+autreJ(j1,j2).
+autreJ(j2,j1).
+
+/*Permet de voir si un score est plus petit ou plus grand qu'un autre*/
+plus_petit(Plateau,Lcoup,Joueur,Score,Iteration):-coupMinmax(Plateau,Lcoup,Joueur,ScoreTemp,_,_,Iteration),Score<ScoreTemp,!.
+plus_grand(Plateau,Lcoup,Joueur,Score,Iteration):-coupMinmax(Plateau,Lcoup,Joueur,ScoreTemp,_,_,Iteration),Score>ScoreTemp,!.
+
+
+/*Donne le meilleur coup grâce au minmax*/
+meilleur_coup(Plateau,Joueur,Coup):-coupsPossibles(Plateau,Joueur,ListeCoups),minmax(Plateau,ListeCoups,Joueur,_,_,Coup,2).
+
 
 /************
 DONNEES TESTS
@@ -285,7 +321,7 @@ DONNEES TESTS
 fauxCoup([j1,3,riz,riz]).
 fauxPlateau([[[mais, riz, ble],
 [riz, cafe],
-[mais, sucre]],
+[mais, sucre,cacao,cacao,ble]],
 [[ble,7],[riz,6],[cacao,6],[cafe,6],[sucre,6],[mais,6]],
 3,[],[]]).
 fausseBourse([[ble,7],[riz,6],[cacao,6],[cafe,6],[sucre,6],[mais,3]]).
