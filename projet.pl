@@ -289,11 +289,6 @@ scoreMinmax([AutreJoueur,_,ElementGarde,_],[_,Bourse,_,_,_],Joueur,Score,Bourse,
 scoreMinmax([Joueur,_,ElementGarde,_],[Marchandise,Bourse,_,_,_],Joueur,Score,Bourse,_):-length(Marchandise,Longueur),Longueur<3,score([ElementGarde],Bourse,Score),!.
 scoreMinmax([AutreJoueur,_,ElementGarde,_],[Marchandise,Bourse,_,_,_],Joueur,Score,Bourse,_):-Joueur\=AutreJoueur,length(Marchandise,Longueur),Longueur<3,score([ElementGarde],Bourse,ScoreTemp),Score is -ScoreTemp,!.
 
-scoreMinmax([Joueur,_,ElementGarde,_],_,Joueur,Score,Bourse,0):-score([ElementGarde],Bourse,Score),!.
-scoreMinmax([AutreJoueur,_,ElementGarde,_],_,Joueur,Score,Bourse,0):-Joueur\=AutreJoueur,score([ElementGarde],Bourse,ScoreTemp),Score is -ScoreTemp,!.
-scoreMinmax([Joueur,_,ElementGarde,_],[Marchandise,_,_,_,_],Joueur,Score,Bourse,_):-length(Marchandise,Longueur),Longueur<3,score([ElementGarde],Bourse,Score),!.
-scoreMinmax([AutreJoueur,_,ElementGarde,_],[Marchandise,_,_,_,_],Joueur,Score,Bourse,_):-Joueur\=AutreJoueur,length(Marchandise,Longueur),Longueur<3,score([ElementGarde],Bourse,ScoreTemp),Score is -ScoreTemp,!.
-
 scoreMinmax([Joueur,_,ElementGarde,_],Plateau,Joueur,Score,Bourse,Iteration):-autreJ(Joueur,AutreJoueur),coupsPossibles(Plateau,AutreJoueur,NouvelleListeCoup),minmax(Plateau,NouvelleListeCoup,Joueur,ScoreTemp1,Bourse,_,Iteration),score([ElementGarde],Bourse,ScoreTemp2),Score is ScoreTemp1+ScoreTemp2.
 scoreMinmax([AutreJoueur,_,ElementGarde,_],Plateau,Joueur,Score,Bourse,Iteration):-Joueur\=AutreJoueur,coupsPossibles(Plateau,Joueur,NouvelleListeCoup),minmax(Plateau,NouvelleListeCoup,Joueur,ScoreTemp1,Bourse,_,Iteration),score([ElementGarde],Bourse,ScoreTemp2),Score is ScoreTemp1-ScoreTemp2.
 
